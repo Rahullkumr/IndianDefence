@@ -1,0 +1,15 @@
+{
+  "outputDirectory": "static/",
+  "buildCommand": "python3 manage.py collectstatic --noinput",
+  "functions": {
+    "api/wsgi.py": {
+      "maxDuration": 15
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/wsgi.py"
+    }
+  ]
+}

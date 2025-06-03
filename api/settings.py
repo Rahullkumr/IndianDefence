@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!zqp&4ae0b9s)7$rf_2lc(k)kw0qw+#)q5ne5xseh+7+i1@ue%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django_browser_reload",
     'base',
     'air',
     'water',
@@ -46,21 +45,21 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
-ROOT_URLCONF = 'IndianDefence.urls'
+ROOT_URLCONF = 'api.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,19 +72,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'IndianDefence.wsgi.application'
+WSGI_APPLICATION = 'api.wsgi.app'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
+DATABASES = {}  # No database as of now
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -117,11 +117,23 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Static files (CSS, JavaScript, images)
+# https://docs.djangoproject.com/en/5.1/ref/settings/#static-url
+if DEBUG:
+    STATIC_URL = '/dev_static/'  # Development URL for static files
+else:
+    STATIC_URL = '/static/'  # Production URL for static files
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# Add your local static file directories here
+STATICFILES_DIRS = [BASE_DIR / "dev_static",]
 
-STATIC_URL = 'static/'
+# Directory where static files will be stored after running collectstatic
+# (Typically outside your project directory for better organization and security)
+STATIC_ROOT = BASE_DIR / 'static'
+
+# Optional: Use manifest storage for cache busting (adding hash to filenames)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
